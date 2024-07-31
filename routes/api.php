@@ -2,7 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\fanController;
+use App\Http\Controllers\Api\LigaController;
+use App\Http\Controllers\Api\klubController;
+use App\Http\Controllers\Api\PemainController;
+use App\Http\Controllers\Api\AuthController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -14,18 +18,20 @@ Route::get('/user', function (Request $request) {
 // Route::put('liga/{id}', [LigaController::class, 'update']);
 // Route::delete('liga/{id}', [LigaController::class, 'destroy']);
 
-// Liga
-use App\Http\Controllers\Api\LigaController;
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    // controller lainnya yang kemarin sudah dibuat simpan dibawah
+   // Liga
 Route::resource('liga', LigaController::class)->except(['edit', 'create']);
-
 // klub
-use App\Http\Controllers\Api\klubController;
 Route::resource('klub', klubController::class)->except(['edit', 'create']);
-
 // pemain
-use App\Http\Controllers\Api\PemainController;
 Route::resource('pemain', PemainController::class)->except(['edit', 'create']);
-
 // fan
-use App\Http\Controllers\Api\fanController;
 Route::resource('fan', fanController::class)->except(['edit', 'create']);
+
+});
+
+// auth route
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
